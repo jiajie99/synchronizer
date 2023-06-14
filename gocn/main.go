@@ -20,11 +20,11 @@ var (
 )
 
 func main() {
-	time := syncGoCNNews()
-	if time == "" {
+	name := syncGoCNNews()
+	if name == "" {
 		return
 	}
-	cmd := exec.Command("./gocn/sync.sh")
+	cmd := exec.Command("./gocn/sync.sh", name)
 	stdout, err := cmd.Output() // 获取命令输出和错误信息
 	if err != nil {
 		panic(err)
@@ -68,7 +68,7 @@ func getFiles(n *html.Node, files *[]string, dir string) {
 }
 
 func syncGoCNNews() string {
-	syncTime := time.Now().AddDate(0, -1, 0)
+	syncTime := time.Now().AddDate(0, -2, 0)
 	dir := syncTime.Format("200601")
 
 	list := getFileList(dir)
