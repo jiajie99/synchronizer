@@ -1,3 +1,4 @@
+#!/bin/bash
 git remote add origin git@github.com:jiajie99/synchronizer.git
 git add .
 git checkout -b "sync-$1"

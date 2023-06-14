@@ -24,7 +24,12 @@ func main() {
 	if time == "" {
 		return
 	}
-	exec.Command("sync.sh", time)
+	cmd := exec.Command("./gocn/sync.sh", time)
+	stdout, err := cmd.Output() // 获取命令输出和错误信息
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(stdout)
 }
 
 func getFileList(dir string) []string {
