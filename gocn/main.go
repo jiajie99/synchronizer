@@ -24,7 +24,7 @@ func main() {
 	if time == "" {
 		return
 	}
-	cmd := exec.Command("./gocn/sync.sh", time)
+	cmd := exec.Command("./gocn/sync.sh")
 	stdout, err := cmd.Output() // 获取命令输出和错误信息
 	if err != nil {
 		panic(err)

@@ -6,5 +6,6 @@ if git checkout -b master; then
 else
   git checkout master
 fi
+git pull
 git commit -m "docs: add $1.md"
 git push --set-upstream origin master
