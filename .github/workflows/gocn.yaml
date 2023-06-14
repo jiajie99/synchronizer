@@ -1,0 +1,25 @@
+name: Sync gocn
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  run_program:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go 1.21
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.21
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build and Run program
+        run: |
+          go build main.go
+          ./main

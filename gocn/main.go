@@ -68,7 +68,7 @@ func getFiles(n *html.Node, files *[]string, dir string) {
 }
 
 func syncGoCNNews() string {
-	syncTime := time.Now().AddDate(0, -2, 0)
+	syncTime := time.Now().AddDate(0, -3, 0)
 	dir := syncTime.Format("200601")
 
 	list := getFileList(dir)
