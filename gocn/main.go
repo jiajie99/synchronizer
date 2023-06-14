@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	newsReg = regexp.MustCompile(`(\d\.)(.+)(https?:\/\/\S+)`)
+	newsReg = regexp.MustCompile(`(\d\.)(.+?)(https?:\/\/\S+)\s?(https?:\/\/\S+)?`)
 	textReg = regexp.MustCompile(`(\d\.)(.+)`)
 )
 
