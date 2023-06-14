@@ -20,5 +20,5 @@ jobs:
       - name: Build and Run program
         run: |
           go mod tidy
-          cd /gocn
-          go run main.go
+          go build main.go
+          ./main
