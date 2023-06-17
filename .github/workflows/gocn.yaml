@@ -27,4 +27,4 @@ jobs:
 
       - name: Build and Run program
         run: |
-          go run ./... -s ${{ secrets.PRIVATE_SSH_KEY }}
+          go run ./...
