@@ -1,6 +1,7 @@
 #!/bin/bash
-git remote add origin git@github.com:jiajie99/synchronizer.git
+git init
 git add .
+git remote add origin git@github.com:jiajie99/synchronizer.git
 if git checkout -b master; then
   echo "Switched to new branch master"
 else
