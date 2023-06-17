@@ -25,6 +25,7 @@ func main() {
 	flag.Parse()
 	name := syncGoCNNews()
 	if name == "" || *secret == "" {
+		fmt.Println("Hello world!")
 		return
 	}
 	cmd := exec.Command("./gocn/sync.sh", name, *secret)
