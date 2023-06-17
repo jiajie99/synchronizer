@@ -1,12 +1,10 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -19,21 +17,21 @@ var (
 	newsReg = regexp.MustCompile(`(\d\.)(.+?)(https?:\/\/\S+)\s?(https?:\/\/\S+)?`)
 	textReg = regexp.MustCompile(`(\d\.)(.+)`)
 )
-var secret = flag.String("s", "", "")
 
 func main() {
-	flag.Parse()
-	name := syncGoCNNews()
-	if name == "" || *secret == "" {
-		fmt.Println("Hello world!")
-		return
-	}
-	cmd := exec.Command("./gocn/sync.sh", name, *secret)
-	stdout, err := cmd.Output() // 获取命令输出和错误信息
+	syncTime := time.Now().AddDate(0, -1, 0)
+	dir := syncTime.Format("200601")
+	syncGoCNNews(dir)
+	readme, err := os.OpenFile("README.md", os.O_APPEND, 0666)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(stdout)
+	defer readme.Close()
+
+	_, err = readme.WriteString("- [" + dir + "](" + dir + ")\n")
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getFileList(dir string) []string {
@@ -71,25 +69,21 @@ func getFiles(n *html.Node, files *[]string, dir string) {
 	}
 }
 
-func syncGoCNNews() string {
-	syncTime := time.Now().AddDate(0, -3, 0)
-	dir := syncTime.Format("200601")
-
+func syncGoCNNews(dir string) {
 	list := getFileList(dir)
 	if len(list) == 0 {
-		log.Println("File list is empty.")
-		return ""
+		log.Fatalln("File list is empty.")
 	}
 
 	newsFile, err := os.Create("./gocn/" + dir + ".md")
 	if err != nil {
 		panic(err)
 	}
+	defer newsFile.Close()
 
 	for _, f := range list {
 		process(dir, f, newsFile)
 	}
-	return dir
 }
 
 func process(dir, mdFile string, newsFile *os.File) {
