@@ -13,6 +13,10 @@ jobs:
         uses: webfactory/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.PRIVATE_SSH_KEY }}
+          
+      - name: Add private key to SSH agent
+        run: |
+          ssh-add <(echo "${{ secrets.PRIVATE_SSH_KEY }}")
 
       - name: Checkout code
         uses: actions/checkout@v3
