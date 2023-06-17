@@ -28,5 +28,7 @@ jobs:
           
       - name: Set SSH_AUTH_SOCK environment variable
         run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "bot"
           git commit -m "123"
           git push
