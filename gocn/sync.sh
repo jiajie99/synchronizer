@@ -8,13 +8,6 @@ git config --global user.name "Your Name"
 git init
 git add .
 
-# Set up SSH key and add to agent
-eval "$(ssh-agent -s)"
-echo "$2" | tr -d '\r' | ssh-add -
-
-# Add SSH known hosts for remote host
-ssh-keyscan github.com >> ~/.ssh/known_hosts
-
 # Set Git remote URL and fetch changes
 git remote add origin git@github.com:jiajie99/synchronizer.git
 git fetch
