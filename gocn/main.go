@@ -22,13 +22,13 @@ func main() {
 	syncTime := time.Now().AddDate(0, -1, 0)
 	dir := syncTime.Format("200601")
 	syncGoCNNews(dir)
-	readme, err := os.OpenFile("README.md", os.O_APPEND, 0666)
+	readme, err := os.OpenFile("./gocn/README.md", os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		panic(err)
 	}
 	defer readme.Close()
 
-	_, err = readme.WriteString("- [" + dir + "](" + dir + ")\n")
+	_, err = readme.WriteString("- [" + dir + "](gocn/" + dir + ".md)\n")
 	if err != nil {
 		panic(err)
 	}
@@ -117,13 +117,18 @@ func process(dir, mdFile string, newsFile *os.File) {
 		panic(err)
 	}
 	strs := textReg.FindAllString(strings.TrimSpace(text), -1)
-	for i, str := range strs {
+	count := 1
+	for _, str := range strs {
 		submatch := newsReg.FindStringSubmatch(str)
+		if len(submatch) == 0 {
+			continue
+		}
 		title := strings.TrimSpace(submatch[2])
 		url := strings.TrimSpace(submatch[3])
-		_, err := newsFile.WriteString(strconv.Itoa(i+1) + ". [" + title + "](" + url + ")\n")
+		_, err := newsFile.WriteString(strconv.Itoa(count) + ". [" + title + "](" + url + ")\n")
 		if err != nil {
 			panic(err)
 		}
+		count++
 	}
 }
