@@ -31,5 +31,5 @@ jobs:
           git config --global user.email "985341864@qq.com"
           git config --global user.name "jiajie99"
           git add .
-          git commit -m "123"
+          git commit -m "docs: add news"
           git push
