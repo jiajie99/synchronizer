@@ -26,10 +26,11 @@ jobs:
         run: |
           go run ./gocn/main.go
           
-      - name: Update changes
+      - name: Set SSH_AUTH_SOCK environment variable
         run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "bot"
-          git add .
-          git commit -m "123"
-          git push
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+
+      - name: Run script
+        run: ./gocn/sync.sh
+        env:
+          SSH_AUTH_SOCK: $SSH_AUTH_SOCK
