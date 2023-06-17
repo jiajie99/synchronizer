@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,13 +19,15 @@ var (
 	newsReg = regexp.MustCompile(`(\d\.)(.+?)(https?:\/\/\S+)\s?(https?:\/\/\S+)?`)
 	textReg = regexp.MustCompile(`(\d\.)(.+)`)
 )
+var secret = flag.String("s", "", "")
 
 func main() {
+	flag.Parse()
 	name := syncGoCNNews()
-	if name == "" {
+	if name == "" || *secret == "" {
 		return
 	}
-	cmd := exec.Command("./gocn/sync.sh", name)
+	cmd := exec.Command("./gocn/sync.sh", name, *secret)
 	stdout, err := cmd.Output() // 获取命令输出和错误信息
 	if err != nil {
 		panic(err)
