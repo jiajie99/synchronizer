@@ -8,15 +8,14 @@ on:
 jobs:
   run_program:
     runs-on: ubuntu-latest
-    steps:
-      - name: Add SSH key to the agent
-        uses: webfactory/ssh-agent@v0.4.1
-        with:
-          ssh-private-key: ${{ secrets.PRIVATE_SSH_KEY }}
-          
+    steps:    
       - name: Add private key to SSH agent
         run: |
           ssh-add <(echo "${{ secrets.PRIVATE_SSH_KEY }}")
+          
+      - name: Set SSH_AUTH_SOCK environment variable
+        run: |
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,3 +29,5 @@ jobs:
         run: |
           go mod tidy
           go run ./...
+        env:
+          SSH_AUTH_SOCK: $SSH_AUTH_SOCK
