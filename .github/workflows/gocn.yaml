@@ -28,9 +28,5 @@ jobs:
           
       - name: Set SSH_AUTH_SOCK environment variable
         run: |
-          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
-
-      - name: Run script
-        run: ./gocn/sync.sh
-        env:
-          SSH_AUTH_SOCK: $SSH_AUTH_SOCK
+          git commit -m "123"
+          git push
