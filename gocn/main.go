@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -10,7 +12,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/samber/lo"
 	"golang.org/x/net/html"
+	"synchronizer/gocn/model"
 )
 
 var (
@@ -36,37 +40,32 @@ func main() {
 
 func getFileList(dir string) []string {
 	url := fmt.Sprintf("https://github.com/gocn/news/tree/master/%s", dir)
-	resp, err := http.Get(url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		panic(err)
 	}
 	defer resp.Body.Close()
 
-	doc, err := html.Parse(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
 	}
 
-	var files []string
-	getFiles(doc, &files, dir)
-
-	return files
-}
-
-func getFiles(n *html.Node, files *[]string, dir string) {
-	if n.Type == html.ElementNode && n.Data == "a" {
-		for _, attr := range n.Attr {
-			if attr.Key == "href" {
-				href := attr.Val
-				if strings.HasPrefix(href, fmt.Sprintf("/gocn/news/blob/master/%s/", dir)) {
-					*files = append(*files, strings.TrimPrefix(href, fmt.Sprintf("/gocn/news/blob/master/%s/", dir)))
-				}
-			}
-		}
+	var getGoCNDirResp model.GetGoCNDirResp
+	err = json.Unmarshal(body, &getGoCNDirResp)
+	if err != nil {
+		panic(err)
 	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		getFiles(c, files, dir)
-	}
+
+	return lo.Map(getGoCNDirResp.Payload.Tree.Items, func(i model.Item, _ int) string {
+		return i.Name
+	})
 }
 
 func syncGoCNNews(dir string) {
@@ -75,7 +74,7 @@ func syncGoCNNews(dir string) {
 		log.Fatalln("File list is empty.")
 	}
 
-	newsFile, err := os.Create("./gocn/" + dir + ".md")
+	newsFile, err := os.Create("./gocn/news/" + dir + ".md")
 	if err != nil {
 		panic(err)
 	}
