@@ -32,7 +32,7 @@ func main() {
 	}
 	defer readme.Close()
 
-	_, err = readme.WriteString("- [" + dir + "](" + dir + ".md)\n")
+	_, err = readme.WriteString("- [" + dir + "](news/" + dir + ".md)\n")
 	if err != nil {
 		panic(err)
 	}
